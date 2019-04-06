@@ -26,6 +26,10 @@ def get_query_string(term, from_date, to_date):
     encoded = ['{}={}'.format(k, v) for k, v in params.items()]
     return '?' + '&'.join(encoded)
 
+def scroll_and_sleep(dr, secs=3):
+    dr.execute_script("window.scrollBy(0, 10000)")
+    time.sleep(secs)
+
 def download_data(search_term, from_date, to_date, limit=0):
     results = []
     driver = webdriver.Chrome()
@@ -35,14 +39,13 @@ def download_data(search_term, from_date, to_date, limit=0):
     tweets = driver.find_elements_by_class_name(classes['tweet'])
     if limit > 0:
         while len(tweets) < limit:
-            driver.execute_script("window.scrollBy(0, 10000)")
-            time.sleep(3)
+            scroll_and_sleep(driver)
             tweets = driver.find_elements_by_class_name(classes['tweet'])
     else:
-        driver.execute_script("window.scrollBy(0, 10000)")
+        scroll_and_sleep(driver)
         while len(tweets) < len(driver.find_elements_by_class_name(classes['tweet'])):
-            driver.execute_script("window.scrollBy(0, 10000)")
-            time.sleep(3)
+            tweets = driver.find_elements_by_class_name(classes['tweet'])
+            scroll_and_sleep(driver, 5)
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
     append_results(soup, results)
