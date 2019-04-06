@@ -1,6 +1,8 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import time
+import dateutil.parser
+from datetime import timedelta
 
 classes = {
     'tweet': 'tweet',
@@ -31,7 +33,7 @@ def scroll_and_sleep(dr, secs=3):
     time.sleep(secs)
 
 def download_data(search_term, from_date, to_date, limit=0):
-    results = []
+    results = {}
     driver = webdriver.Chrome()
     driver.get(base_url + get_query_string(search_term, from_date, to_date))
     time.sleep(2)
@@ -57,6 +59,7 @@ def download_data(search_term, from_date, to_date, limit=0):
 def append_results(soup, result_list):
     tweets = soup.find_all('div', {'class': 'tweet'})
     for tweet in tweets:
+        id = tweet.attrs['data-tweet-id']
         text = tweet.find('p', {'class': 'tweet-text'}).text
         timestamp = tweet.find('span', {'class': '_timestamp'}).attrs['data-time']
         tmp = {}
@@ -69,4 +72,20 @@ def append_results(soup, result_list):
 
         result.update(tmp)
 
-        result_list.append(result)
+        result_list[id] = result
+
+def download_data_for_period(search_term, from_date, to_date, daily_limit=0):
+    complete_results = {}
+    begin_date = dateutil.parser.parse(from_date)
+    end_date = dateutil.parser.parse(to_date)
+
+    while begin_date <= end_date:
+        complete_results.update(
+            download_data(
+                search_term,
+                begin_date.strftime("%Y-%m-%d"),
+                (begin_date + timedelta(days=1)).strftime("%Y-%m-%d"),
+                daily_limit
+                ))
+        begin_date += timedelta(days=1)
+    return list(complete_results.values())
