@@ -54,18 +54,16 @@ def download_data(search_term, from_date, to_date, limit=0):
 def append_results(soup, result_list):
     tweets = soup.find_all('div', {'class': 'tweet'})
     for tweet in tweets:
-        result_list.append(tweet.find('p', {'class': 'tweet-text'}).text)
+        text = tweet.find('p', {'class': 'tweet-text'}).text
+        timestamp = tweet.find('a', {'span': '_timestamp'}).attrs['data-time']
+        tmp = {}
+        result = {'text': text, 'created_at': timestamp}
 
-    # for tweet in tweets:
-    #     text = tweet.find_element_by_class_name('tweet-text').text
-    #     timestamp = tweet.find_element_by_class_name('_timestamp').get_attribute('data-time')
-    #     tmp = {}
-    #     result = {'text': text, 'created_at': timestamp}
+        for action in ['replies', 'retweeted', 'favorited']:
+            action_object = tweet.find('div', {'class': classes[action]})
+            count = action_object.find('span', {'class': classes['action_count']}).text
+            tmp[action] = count
 
-    #     for action in ['js-actionReply', 'js-actionRetweet', 'js-actionFavorite']:
-    #         action_object = tweet.find_element_by_class_name(action)
-    #         count = action_object.find_element_by_class_name('ProfileTweet-actionCountForPresentation').text
-    #         tmp[action] = count
-    #     result.update(tmp)
+        result.update(tmp)
 
-    #     result_list.append(result)
+        result_list.append(result)
