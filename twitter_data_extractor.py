@@ -60,7 +60,7 @@ def append_results(soup, result_list):
         result = {'text': text, 'created_at': timestamp}
 
         for action in ['replies', 'retweeted', 'favorited']:
-            action_object = tweet.find('div', {'class': classes[action]})
+            action_object = tweet.find('button', {'class': classes[action]})
             count = action_object.find('span', {'class': classes['action_count']}).text
             tmp[action] = count
 
