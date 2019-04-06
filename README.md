@@ -18,4 +18,4 @@ This project will by mostly analytical. Data from differen social networks will 
 
 The first step of this project is, of course, to gather the data.
 
-On [this notebook]() about retrieving the data, you'll find steps to generate a basic dataset with data from the Twitter API. You'll need to sign up for those in case you want to run it by yourself. Or you can personally request the data from me in order to recreate the steps that will come next.
+On [this notebook](./retrieving_the_data.ipynb) about retrieving the data, you'll find steps to generate a basic dataset with data from the Twitter API. You'll need to sign up for those in case you want to run it by yourself. Or you can personally request the data from me in order to recreate the steps that will come next.
