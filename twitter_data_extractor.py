@@ -55,7 +55,7 @@ def append_results(soup, result_list):
     tweets = soup.find_all('div', {'class': 'tweet'})
     for tweet in tweets:
         text = tweet.find('p', {'class': 'tweet-text'}).text
-        timestamp = tweet.find('a', {'span': '_timestamp'}).attrs['data-time']
+        timestamp = tweet.find('span', {'class': '_timestamp'}).attrs['data-time']
         tmp = {}
         result = {'text': text, 'created_at': timestamp}
 
