@@ -14,7 +14,7 @@ Other electoral processes in different countries, have been known or speculated 
 
 ## Structure of the project
 
-This project will by mostly analytical. Data from differen social networks will be gathered, to analyze the sentiment among users toward the different candidates, and if it changed after fake news were divulged.
+This project will be mostly analytical. Data from differen social networks will be gathered, to analyze the sentiment among users toward the different candidates, and if it changed after fake news were divulged.
 
 The first step of this project is, of course, to gather the data.
 
