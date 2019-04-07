@@ -40,8 +40,11 @@ def download_data(search_term, from_date, to_date, limit=0):
 
     tweets = driver.find_elements_by_class_name(classes['tweet'])
     if limit > 0:
-        while len(tweets) < limit:
-            scroll_and_sleep(driver)
+        while len(tweets) < limit and len:
+            scroll_and_sleep(driver, 5)
+            if len(driver.find_elements_by_class_name(classes['tweet'])) == len(tweets):
+                break
+
             tweets = driver.find_elements_by_class_name(classes['tweet'])
     else:
         scroll_and_sleep(driver)
@@ -60,15 +63,19 @@ def append_results(soup, result_list):
     tweets = soup.find_all('div', {'class': 'tweet'})
     for tweet in tweets:
         id = tweet.attrs['data-tweet-id']
-        text = tweet.find('p', {'class': 'tweet-text'}).text
-        timestamp = tweet.find('span', {'class': '_timestamp'}).attrs['data-time']
+        text_div = tweet.find('p', {'class': 'tweet-text'})
+        text = text_div.text if text_div is not None else ''
+        timestamp_box = tweet.find('span', {'class': '_timestamp'})
+        timestamp = timestamp_box.attrs['data-time'] if timestamp_box is not None else ''
         tmp = {}
         result = {'text': text, 'created_at': timestamp}
 
         for action in ['replies', 'retweeted', 'favorited']:
             action_object = tweet.find('button', {'class': classes[action]})
-            count = action_object.find('span', {'class': classes['action_count']}).text
-            tmp[action] = count
+            if action_object is not None:
+                count_box = action_object.find('span', {'class': classes['action_count']})
+                count = count_box.text if count_box is not None else ''
+                tmp[action] = count
 
         result.update(tmp)
 
