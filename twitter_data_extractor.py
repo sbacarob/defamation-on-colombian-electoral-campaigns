@@ -11,7 +11,7 @@ classes = {
     'replies': 'js-actionReply',
     'retweeted': 'js-actionRetweet',
     'favorited': 'js-actionFavorite',
-    'action_count': 'ProfileTweet-actionCountForPresentation'
+    'action_count': 'ProfileTweet-actionCount'
 }
 
 base_url = "https://twitter.com/search"
@@ -64,18 +64,29 @@ def append_results(soup, result_list):
     for tweet in tweets:
         id = tweet.attrs['data-tweet-id']
         text_div = tweet.find('p', {'class': 'tweet-text'})
-        text = text_div.text if text_div is not None else ''
+
+        if text_div is None:
+            continue
+
+        lang = text_div.attrs['lang']
+        text = text_div.text
         timestamp_box = tweet.find('span', {'class': '_timestamp'})
-        timestamp = timestamp_box.attrs['data-time'] if timestamp_box is not None else ''
+        timestamp = timestamp_box.attrs['data-time']
         tmp = {}
-        result = {'text': text, 'created_at': timestamp}
+        result = {'text': text, 'created_at': timestamp, 'lang': lang}
 
         for action in ['replies', 'retweeted', 'favorited']:
             action_object = tweet.find('button', {'class': classes[action]})
-            if action_object is not None:
-                count_box = action_object.find('span', {'class': classes['action_count']})
-                count = count_box.text if count_box is not None else ''
-                tmp[action] = count
+            count_box = action_object.find('span', {'class': classes['action_count']})
+            if count_box is not None:
+                if 'data-tweet-stat-count' in count_box.attrs:
+                    count = count_box.attrs['data-tweet-stat-count']
+                else:
+                    count = count_box.text.replace('\n', '')
+            else:
+                count = '0'
+            if count == '': count = '0'
+            tmp[action] = count
 
         result.update(tmp)
 
