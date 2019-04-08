@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import time
 import dateutil.parser
 from datetime import timedelta
+from selenium.webdriver.common.proxy import *
 
 classes = {
     'tweet': 'tweet',
@@ -34,7 +35,17 @@ def scroll_and_sleep(dr, secs=3):
 
 def download_data(search_term, from_date, to_date, limit=0):
     results = {}
-    driver = webdriver.Chrome()
+    proxy_host = '80.211.234.193'
+
+    proxy = Proxy({
+        'proxyType': ProxyType.MANUAL,
+        'httpProxy': proxy_host,
+        'ftpProxy': proxy_host,
+        'sslProxy': proxy_host,
+        'noProxy': ''
+    })
+
+    driver = webdriver.Firefox(proxy=proxy)
     driver.get(base_url + get_query_string(search_term, from_date, to_date))
     time.sleep(2)
 
