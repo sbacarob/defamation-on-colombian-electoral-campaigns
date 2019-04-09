@@ -51,7 +51,7 @@ def download_data(search_term, from_date, to_date, limit=0):
 
     tweets = driver.find_elements_by_class_name(classes['tweet'])
     if limit > 0:
-        while len(tweets) < limit and len:
+        while len(tweets) < limit:
             scroll_and_sleep(driver, 5)
             if len(driver.find_elements_by_class_name(classes['tweet'])) == len(tweets):
                 break
