@@ -35,7 +35,7 @@ def scroll_and_sleep(dr, secs=3):
 
 def download_data(search_term, from_date, to_date, limit=0):
     results = {}
-    proxy_host = '80.211.234.193'
+    proxy_host = '' # Add a proxy host here. You can easily find available proxies online
 
     proxy = Proxy({
         'proxyType': ProxyType.MANUAL,
