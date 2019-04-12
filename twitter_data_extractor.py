@@ -12,7 +12,8 @@ classes = {
     'replies': 'js-actionReply',
     'retweeted': 'js-actionRetweet',
     'favorited': 'js-actionFavorite',
-    'action_count': 'ProfileTweet-actionCount'
+    'action_count': 'ProfileTweet-actionCount',
+    'user': 'js-user-profile-link'
 }
 
 base_url = "https://twitter.com/search"
@@ -83,8 +84,11 @@ def append_results(soup, result_list):
         text = text_div.text
         timestamp_box = tweet.find('span', {'class': '_timestamp'})
         timestamp = timestamp_box.attrs['data-time']
+        user_link = tweet.find('a', {'class': classes['user']})
+        user_id = user_link.attrs['data-user-id']
+
         tmp = {}
-        result = {'text': text, 'created_at': timestamp, 'lang': lang}
+        result = {'text': text, 'created_at': timestamp, 'lang': lang, 'user': user_id}
 
         for action in ['replies', 'retweeted', 'favorited']:
             action_object = tweet.find('button', {'class': classes[action]})
