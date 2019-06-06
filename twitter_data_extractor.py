@@ -59,7 +59,7 @@ def download_data(search_term, from_date, to_date, limit=0):
     * limit - Limit the number of tweets to take from the results. Defaults to 0, including all.
     """
     results = {}
-    proxy_host = '' # Add a proxy host here. You can easily find available proxies online
+    proxy_host = '' # Add a proxy host here. You can find available proxy lists online
 
     proxy = Proxy({
         'proxyType': ProxyType.MANUAL,
@@ -115,10 +115,11 @@ def append_results(soup, result_list):
         user_link = tweet.find('a', {'class': CLASSES['user']})
 
         if 'data-is-reply-to' in tweet.attrs and tweet.attrs['data-is-reply-to'] == "true":
-            in_reply_to = json.loads(tweet.attrs['data-reply-to-users-json'])[-1]["id_str"]
-            if in_reply_to == "77653794":
+            in_reply_to = json.loads(tweet.attrs['data-reply-to-users-json'])
+            in_reply_to = list(map(lambda x: x.get('id_str', ''), in_reply_to))
+            if "77653794" in in_reply_to:
                 tweet_text = "@IvanDuque " + tweet_text
-            elif in_reply_to == "49849732":
+            if "49849732" in in_reply_to:
                 tweet_text = "@petrogustavo " + tweet_text
 
         tmp = {}
